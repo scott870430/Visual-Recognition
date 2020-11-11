@@ -1,13 +1,13 @@
 import os
 import csv
 import torch
-version = 'resnext50_32x4d_v7'
+
 isTest = False
 image_size = (700, 700)
 Batch_size = 8
 lr = 0.001
 epochs = 20
-os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 label2index = {}

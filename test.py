@@ -10,8 +10,8 @@ import torchvision.models as models
 from torchvision import transforms
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "9"
-version = 'resnext50_32x4d_v6'
+# os.environ["CUDA_VISIBLE_DEVICES"] = "9"
+version = 'pre-trained-weight'
 if __name__ == '__main__':
     Batch_size = 100
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     fc_feature = model.fc.in_features
     model.fc = nn.Linear(fc_feature, 196)
     model = nn.DataParallel(model)
-    model.load_state_dict(torch.load('./model/model_' + version + '19',
+    model.load_state_dict(torch.load('./model/' + version,
                           map_location=lambda storage, loc: storage))
     model.to(device)
     test_transform = transforms.Compose([
@@ -32,11 +32,13 @@ if __name__ == '__main__':
         ]
     )
     test_loader = Data.DataLoader(load_data.car_dataset(False, test_transform),
-                                  batch_size=Batch_size, shuffle=False, num_workers=4)
-    
+                                  batch_size=Batch_size,
+                                  shuffle=False,
+                                  num_workers=4)
+
     prediction_path = './prediction'
     if not os.path.isdir(prediction_path):
-        	os.makedirs(prediction_path)
+        os.makedirs(prediction_path)
     # generate prediction result
     with torch.no_grad():
         # test

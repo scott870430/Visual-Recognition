@@ -9,7 +9,7 @@ The following specs were used to create the original solution.
 
 - Ubuntu 18.04 LTS
 - Intel(R) Xeon(R) Silver 4210 CPU @ 2.20GHz
-- 1x GeForce RTX 2080 Ti
+- 2x GeForce RTX 2080 Ti
 
 ## Dataset
 
@@ -40,13 +40,18 @@ Download data from [Kaggle](https://www.kaggle.com/c/cs-t0828-2020-hw1/data)
 
 ### Download pre-trained model
 
+You can download pretrained model from [here](https://drive.google.com/file/d/1pegMyiUYyVpJiS6uagute-sJvBpdzW2f/view?usp=sharing)
+
+Then, move the model weight to `./model/`
+
 ### Training 
 ```
 python main.py
 ```
+You can change hyperparameters in `parameter.py`
 ### Testing
 
 ```
 python test.py
 ```
-
+After testing, You can get prediction with .csv format, then you can submit the prediction and get your accuracy 

@@ -13,8 +13,7 @@ from torchvision import transforms
 import torchvision.models as models
 
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
-version = 'resnext50_32x4d_v3'
+version = 'resnext50_32x4d_v1'
 print(version)
 # draw tranining loss curve and test error rate curve
 
@@ -39,7 +38,7 @@ if __name__ == '__main__':
         # random horizontal flip image
         transforms.RandomHorizontalFlip(p=0.5),
         # random rotate image
-        transforms.RandomRotation(10),
+        transforms.RandomRotation(15),
         # change the data from 0~255 to 0~1 and the format to tensor
         transforms.ToTensor(),
         # normalize the data to [-1, 1]
@@ -98,13 +97,12 @@ if __name__ == '__main__':
         train_acc.append(train_correct / total_number)
         training_loss_curve.append(total_loss / total_number)
 
-        # if epoch == parameter.epochs:
         if not os.path.isdir(save_model_path):
-        	os.makedirs(save_model_path)
+            os.makedirs(save_model_path)
         torch.save(model.state_dict(), save_model_path + '/model_' + version)
 
     draw_curve([train_acc], 'training_acc', ['acc'], needtosave=True)
     draw_curve([training_loss_curve],
-    	       'training_loss', ['training_loss'], needtosave=True)
+               'training_loss', ['training_loss'], needtosave=True)
 
     print("END")
