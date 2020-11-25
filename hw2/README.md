@@ -26,7 +26,7 @@ data
 
 ## Method
 
-I use two object detection models on this dataset.
+I use two object detection models on this dataset separately.
 1. faster R-CNN provided by Pytorch
 2. yolov3 provided by mmdetection
 
@@ -46,12 +46,14 @@ pip install -r requirements.txt
 ```
 ### Download torchvision function
 
-In my model, i use some function, which is provided by torchvision, in `faster R-CNN/torchvision`, or you can download the file from [here](https://github.com/pytorch/vision/tree/master/references/detection).
+In my model, I use some function, which is provided by torchvision, in `faster R-CNN/torchvision`, or you can download the file from [here](https://github.com/pytorch/vision/tree/master/references/detection).
 
 
 ### Download pre-trained model
 
 You can download pretrained model from [here](https://drive.google.com/file/d/1Pk7vDXtx_Wxb18w8i4PVC-OAjopssFp5/view?usp=sharing)
+
+Then, move the model weight to `./model/`
 
 #### Modify model
 The default backbone of faster R-CNN is ResNet50. The image size of SVHN dataset is relatively small, so I change the backbone to mobilenet_v2 which is a ligher model. I also modify size and aspect ratios of anchor so that the model can foucs on smaller objects.
@@ -61,7 +63,6 @@ AnchorGenerator(sizes=((16, 32, 64, 128, 256),),
                aspect_ratios=((0.5, 1.0, 1.5),))
 ```
 
-Then, move the model weight to `./model/`
 
 
 ### Testing
@@ -74,7 +75,7 @@ If you download the dataset from website, you can calculate the mAP of the test 
 
 ### Training 
 
-If you want to train your own model, you should change the data format to voc format, or you can just use me `load_data.py`
+If you want to train your own model, you should change the data format to voc format, or you can just use `load_data.py`
 
 You can change hyperparameters in `parameter.py`
 
@@ -82,6 +83,7 @@ You can change hyperparameters in `parameter.py`
 - `Batch_size`
 - `lr` 
 - `epochs` 
+
 Training your own model!
 ```
 python main.py
@@ -106,19 +108,20 @@ Before using yolov3, you should install [MMDetection](https://github.com/open-mm
 ### Move file
 After you download MMDetection, you need to 
 1. move the `svhn` folder under `configs` folder.
-2. mover the `test.py` to `mmdetection/tools/`
+2. move the `test.py` to `mmdetection/tools/`
  
 ### COCO dataset format
 
 You need to change dataset to [COCO dataset format](https://cocodataset.org/#format-data), or you can perform `svhntococo.py`, it can generate COCO dataset format ```svhn_coco.json``` for training and ```svhn_coco_test.json``` for testing.
-And you should move ```svhn_coco.json``` to ```./dataset/train/``` and ```svhn_coco_test.json``` to ```./dataset/test/```
+And you need to move ```svhn_coco.json``` to ```./dataset/train/``` and ```svhn_coco_test.json``` to ```./dataset/test/```
 
 ### modify config
 
 * select yolov3 version
 ``` _base_ = 'yolo/yolov3_d53_320_273e_coco.py' ```
 * modify class number
-``` model = dict(
+``` 
+model = dict(
     bbox_head=dict(
         num_classes=10,))
 ```
@@ -145,7 +148,7 @@ data = dict(
         classes=classes,
         ann_file='../dataset/test/svhn_coco_test.json'))
 ```
-```samples_per_gpu``` is batch size
+* ```samples_per_gpu``` is batch size
 
 ### Training 
 
@@ -161,13 +164,21 @@ python3 tools/train.py configs/svhn/yolov3_svhn_v2.py --gpu-ids 0
 python3 tools/test.py configs/svhn/yolov3_svhn.py  work_dirs/yolov3_svhn/latest.pth --format-only --options "jsonfile_prefix=./prediction/yolov3_v1"
 ```
 Then, you will get a json file, which contain the model prediction resul, and you can submit the prediction and get your accuracy.
-If you download the dataset from website, you can calculate the mAP by
 
+perform `convert_prediction.py` to get prediction of each image.
+
+```
+python convert_prediction.py -t yolov3_v1.bbox.json -v version1
+```
+#### Argument
+* `-t` origin prediction result of yolo
+* `-v` output json file name
+
+If you download the dataset from website, you can calculate the mAP by
 ```
 python3 tools/test.py configs/svhn/yolov3_svhn.py  work_dirs/yolov3_svhn/latest.pth --eval bbox
 ```
-
-**Notice: you need to modify svhn_coco_test.json, let it contain label of testing label** 
+**Notice: you need to modify svhn_coco_test.json, let it contain label of testing data** 
 ## Citation
 ```
 @article{mmdetection,
