@@ -78,6 +78,10 @@ if __name__ == '__main__':
                 cv2.imwrite("./figure/test/" + idx[i], img)
                 prediction.append(d)
 
+    prediction_path = './prediction'
+    if not os.path.isdir(prediction_path):
+        os.makedirs(prediction_path)
+
     import json
     with open('./prediction/' + version + '0856165.json', "w") as f:
         json.dump(prediction, f)

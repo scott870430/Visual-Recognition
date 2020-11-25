@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from torchvision import transforms
 import torchvision.models as models
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print(parameter.version)
@@ -79,9 +79,11 @@ if __name__ == '__main__':
 
         train_acc.append(coco_evaluator.coco_eval['bbox'].stats[0])
         training_loss_curve.append(metric_logger.meters['loss'].avg)
-
+        model_path = './model'
+        if not os.path.isdir(model_path):
+            os.makedirs(model_path)
         torch.save(model.state_dict(),
-                   './model/model_' + parameter.version + str(epoch))
+                   model_path + '/model_' + parameter.version + str(epoch))
 
     draw_curve([train_acc], 'train_acc', ['acc'], needtosave=True)
     draw_curve([training_loss_curve],

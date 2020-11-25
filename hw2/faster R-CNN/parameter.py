@@ -58,7 +58,7 @@ def get_transform(istrain):
     return T.Compose(transforms)
 
 istest = False
-version = 'version7'
+version = 'version1'
 Batch_size = 5
 lr = 0.005
 epochs = 20
