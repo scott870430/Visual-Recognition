@@ -75,7 +75,7 @@ If you download the dataset from website, you can calculate the mAP of the test 
 
 ### Training 
 
-If you want to train your own model, you should change the data format to voc format, or you can just use `load_data.py`
+If you want to train your own model, you should change the data format, or you can just use `load_data.py`
 
 You can change hyperparameters in `parameter.py`
 
