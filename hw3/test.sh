@@ -1,0 +1,10 @@
+python3 test.py \
+    --gpu-ids 6 \
+    --config ./work_dir/version1/config.yaml \
+    --version version1 \
+    --epoch 1 \
+    --model-path ./work_dir \
+    --output-version 1 \
+    --mask-threshold 0.3 \
+    --version-name version1 \
+    --test False \
