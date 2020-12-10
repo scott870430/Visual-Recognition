@@ -107,16 +107,17 @@ If you want to train your own model, you should change the data format, or you c
 
 You can change hyperparameters in `config.yaml`
 
-  - `HIDDEN_LAYER`
-  - `CLASS_NUMBER`
-  - `BATCH_SIZE`
-  - `LR`
-  - `EPOCHS`
-  - `HIDDEN_LAYER`
-  - `TRAINABLE`
+Your class number need to +1 for background
+
+  - `CLASS_NUMBER` 
+  - `BATCH_SIZE` 
+  - `LR` 
+  - `EPOCHS` 
+  - `HIDDEN_LAYER` 
+  - `TRAINABLE` 
   - `LR_STEP`
   - `LR_GAMMA`
-  - `ISNORM`
+  - `ISNORM` 
 
 #### Modify model
 The default hidden layer of Mask R-CNN head is 256. You can change it in `config.yaml`

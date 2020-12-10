@@ -1,5 +1,5 @@
 python3 test.py \
-    --gpu-ids 6 \
+    --gpu-ids 0 \
     --config ./work_dir/version1/config.yaml \
     --version version1 \
     --epoch 1 \
