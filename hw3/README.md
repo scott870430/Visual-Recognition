@@ -28,7 +28,9 @@ data
 I use [YACS](https://github.com/rbgirshick/yacs) in my project. It can help me track model config and reproduct model. With python logging library, it can automatically save each version for me
 
 YACS can set deafult parameter in a python file (`config.py` in my project), and you can change the parameter in `.yaml` file (`config.yaml` in my project). 
+
 You need to import `get_cfg_defaults()` from `config.py` for parameter setting, and use `cfg.merge_from_file()` to modify parameter for different version. 
+
 Cooperate with python logging, it can save all setting and log of each version automatically, and just only need to change parameter in `config.yaml` .
 
 You can refer my `config.py` and `config.yaml` for how to use YACS, or view the full usage of YACS from the official [github](https://github.com/rbgirshick/yacs).
