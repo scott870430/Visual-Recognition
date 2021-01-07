@@ -12,7 +12,6 @@ import cv2
 parser = argparse.ArgumentParser(description="PyTorch VDSR Demo")
 parser.add_argument("--cuda", action="store_true", help="use cuda?")
 parser.add_argument("--model", default="model/model_epoch_50.pth", type=str, help="model path")
-parser.add_argument("--image", default="butterfly_GT", type=str, help="image name")
 parser.add_argument("--scale", default=3, type=int, help="scale factor, Default: 3")
 parser.add_argument("--gpus", default="0", type=str, help="gpu ids (default: 0)")
 parser.add_argument("--output", default="output", type=str, help="output file name")

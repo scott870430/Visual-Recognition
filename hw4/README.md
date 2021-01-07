@@ -1,5 +1,5 @@
-# Tiny PASCAL VOC dataset
-Code for instance segmentation on the Tiny PASCAL VOC dataset.
+# Image super-resolution
+Code for Image super-resolution.
 
 
 ## Hardware
@@ -10,155 +10,138 @@ The following specs were used to create the original solution.
 - Intel(R) Xeon(R) Silver 4210 CPU @ 2.20GHz
 - 1x GeForce RTX 2080 Ti
 
-## Tiny PASCAL VOC Dataset
+## Dataset
 
-You can download dataset from [here](https://drive.google.com/drive/folders/1fGg03EdBAxjFumGHHNhMrz2sMLLH04FK)
+You can download dataset from [here](https://drive.google.com/drive/u/3/folders/1H-sIY7zj42Fex1ZjxxSC3PV1pK4Mij6x)
 ```
 data
-  +- train
-  | pascal_train.json
-  |  +- 1,349  images
+  +- training_hr_images
+  | 291 high-resolution images
   
-  +- tset.json
-  |  +- 100 images
+  +- tseting_lr_images
+  |  14 low-resolution images
 
 ```
 
-## YACS
-I use [YACS](https://github.com/rbgirshick/yacs) in my project. It can help me track model config and reproduct model. With python logging library, it can automatically save each version for me
-
-YACS can set deafult parameter in a python file (`config.py` in my project), and you can change the parameter in `.yaml` file (`config.yaml` in my project). 
-
-You need to import `get_cfg_defaults()` from `config.py` for parameter setting, and use `cfg.merge_from_file()` to modify parameter for different version. 
-
-Cooperate with python logging, it can save all setting and log of each version automatically, and just only need to change parameter in `config.yaml` .
-
-You can refer my `config.py` and `config.yaml` for how to use YACS, or view the full usage of YACS from the official [github](https://github.com/rbgirshick/yacs).
 
 
 ## Method
 
-Mask R-CNN from [torchvision](https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html)
+[VDSR](https://github.com/twtygqyy/pytorch-vdsr) and [msrresnet](https://github.com/cszn/KAIR)
 
 
 
-## Mask R-CNN
-To reproduct my submission without retrainig, you need to do the following steps:
+## VDSR
+To reproduct my submission without retrain, you need to do the following steps:
 
-1. [Installation](#installation)
-2. [Download torchvision function](#Download-torchvision-function)
-3. [Download pre-trained model](#Download-pre-trained-model)
+1. [clone](#clone)
+2. [Download pre-trained model](#Download-pre-trained-model)
 4. [Inference](#Testing)
 
-### Installation
+### clone
 ```
-pip install -r requirements.txt
-```
-### Download torchvision function
-
-In my model, I use some function, which is provided by torchvision, in `faster R-CNN/torchvision`, or you can download the file from [here](https://github.com/pytorch/vision/tree/master/references/detection).
-
-if you use normalizae, you need to add normalize class form [here](https://github.com/pytorch/vision/blob/master/references/segmentation/transforms.py)
-```
-class Normalize(object):
-    def __init__(self, mean, std):
-        self.mean = mean
-        self.std = std
-
-    def __call__(self, image, target):
-        image = F.normalize(image, mean=self.mean, std=self.std)
-        return image, target
-```
-
-And add this function to `utils.py` for change the predcition mask to rle format
-```
-def binary_mask_to_rle(binary_mask):
-    rle = {'counts': [], 'size': list(binary_mask.shape)}
-    counts = rle.get('counts')
-    for i, (value, elements) in enumerate(groupby(binary_mask.ravel(order='F'))):
-        if i == 0 and value == 1:
-            counts.append(0)
-        counts.append(len(list(elements)))
-    compressed_rle = maskutil.frPyObjects(rle, rle.get('size')[0], rle.get('size')[1])
-    compressed_rle['counts'] = str(compressed_rle['counts'], encoding='utf-8')
-    return compressed_rle
+git clone https://github.com/twtygqyy/pytorch-vdsr
 ```
 
 ### Download pre-trained model
 
-You can download pretrained model from [here](https://drive.google.com/file/d/1Ol4S84vnXCU4wnFCpZjgfojtrzdGP_kZ/view?usp=sharing)
+You can download pretrained model from [here](https://drive.google.com/file/d/1G51gQs0vFngrsLtON_ScuOoKPQ3VyAd-/view?usp=sharing)
 
 
 ### Testing
 
 ```
-python test.py [your args]
+python3 infer.py [your args]
 ```
 
 #### Argument
-* `--gpu-ids`         the which gpu you want to use 
-* `--config`          the name of config which you want to use 
-* `--version`         whcih version you want to use
-* `--epoch`           whcih epoch you want to use 
-* `--model-path`      where is your model 
-* `--output-version`  model output version
-* `--mask-threshold`  threshold of your mask
+* `--cuda`        use gpu 
+* `--model`       your model path 
+* `--scale`       my model is pre-trained with scale 3
+* `--gpus`        whcih gpu you want to use 
+* `--output`      output file name 
+* `--path`  testing file path
 
 Or you can just run 
 ```
-bash test.sh
+sh mytest.sh
 ```
-### Training 
+### Train VDSR 
 
-If you want to train your own model, you should change the data format, or you can just use `load_data.py`
+You can train your own model 
 
-You can change hyperparameters in `config.yaml`
-
-Your class number need to +1 for background
-
-  - `CLASS_NUMBER` 
-  - `BATCH_SIZE` 
-  - `LR` 
-  - `EPOCHS` 
-  - `HIDDEN_LAYER` 
-  - `TRAINABLE` 
-  - `LR_STEP`
-  - `LR_GAMMA`
-  - `ISNORM` 
-
-#### Modify model
-The default hidden layer of Mask R-CNN head is 256. You can change it in `config.yaml`
-
-
-#### Training your own model!
 ```
-python main.py [your args]
+python3 main_vdsr.py [your args]
 ```
 
 #### Argument
-* `--gpu-ids`         which gpu you want to use 
-* `--config`          the name of config which you want to use 
-* `--version`         your model's version
-* `--save-dir`        where you want to save your model and log 
-* `--log-file-name`   what is your log name 
+* `--batchSize`   Training batch size
+* `--nEpochs`     Number of epochs to train for
+* `--lr`       Learning Rate. Default=0.1
+* `--step`     Sets the learning rate to the initial LR decayed by momentum every n epochs, Default: n=10
+* `--cuda`      Use cuda? 
+* `--threads`  Number of threads for data loader to use, Default: 1
+* `--weight-decay`  Weight decay, Default: 1e-4
+* `--pretrained`  path to pretrained model (default: none)
+* `--gpus`  gpu ids
 
 
-Or you can just run 
 ```
-bash train.sh
+sh mytrain.sh
 ```
 
+If you want to train your own dataset, you need to use `data/generate_train.m` to generate new `train.h5` file.
+
+## msrresnet
+To reproduct my submission without retrain, you need to do the following steps:
+
+1. [clone](#clone)
+2. [Download pre-trained model](#Download-pre-trained-model)
+4. [Inference](#Testing)
+
+### clone
+```
+git clone https://github.com/cszn/KAIR
+```
+
+### Download pre-trained model
+
+You can download pretrained model from [here](https://drive.google.com/drive/folders/1J6EGrNC6jbCm_VwDrRWmxosu45Vs1bmR?usp=sharing)
 
 
-If you use your own dataset, you need to calculate the mAP by yourself, or use coco to evaluate.
+### Testing
+
+```
+python3 main_test_msrresnet.py 
+```
+
+### Train msrresnet
+
+You can train your own model, you need to move training set to  `trainsets/trainH`, and modify parameter in `options/train_msrresnet_psnr`
+
+```
+python3 main_train_msrresnet_psnr.py 
+```
+
 
 
 ## Reference
 
-[torchvision function](https://github.com/pytorch/vision/tree/master/references/detection)
+[VDSR code](https://github.com/twtygqyy/pytorch-vdsr)
 
-[TORCHVISION OBJECT DETECTION FINETUNING TUTORIAL](https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html)
+[VDSR paper](https://cv.snu.ac.kr/research/VDSR/VDSR_CVPR2016.pdf)
 
-[Mask R-CNN tutorial](https://blog.csdn.net/u013685264/article/details/100564660)
+[msrresnet code](https://github.com/cszn/KAIR)
 
-[yacs_config](https://github.com/rbgirshick/yacs)
+[msrresnet paper](https://arxiv.org/abs/1809.00219)
+
+## References
+```
+@InProceedings{wang2018esrgan, % ESRGAN, MSRResNet
+    author = {Wang, Xintao and Yu, Ke and Wu, Shixiang and Gu, Jinjin and Liu, Yihao and Dong, Chao and Qiao, Yu and Loy, Chen Change},
+    title = {ESRGAN: Enhanced super-resolution generative adversarial networks},
+    booktitle = {The European Conference on Computer Vision Workshops (ECCVW)},
+    month = {September},
+    year = {2018}
+}
+```
